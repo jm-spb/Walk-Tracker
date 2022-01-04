@@ -31,3 +31,7 @@ export interface IRouteResponseData {
   moving_time: number;
   map: IMapPolyline;
 }
+
+export interface IRoutesProps {
+  data: IRouteRenderData[];
+}
