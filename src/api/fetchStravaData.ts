@@ -1,15 +1,8 @@
 import axios from 'axios';
-import polyline from '@mapbox/polyline';
 
-type IFetch = (
-  clientID: string,
-  clientSecret: string,
-  refreshToken: string,
-  authLink: string,
-  activitiesLink: string,
-) => Promise<number[][]>;
+import { IFetchStravaData } from '../types';
 
-const fetchCoordinates: IFetch = async (
+const fetchStravaData: IFetchStravaData = async (
   clientID,
   clientSecret,
   refreshToken,
@@ -28,13 +21,7 @@ const fetchCoordinates: IFetch = async (
 
   console.log(stravaActivityResponse);
 
-  const decodedCoords = polyline.decode(
-    stravaActivityResponse.data[0].map.summary_polyline,
-  );
-
-  const formatedCoords = decodedCoords.map((coord) => coord.reverse());
-
-  return formatedCoords;
+  return stravaActivityResponse;
 };
 
-export default fetchCoordinates;
+export default fetchStravaData;
