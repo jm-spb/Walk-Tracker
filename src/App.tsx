@@ -65,7 +65,13 @@ const App = (): JSX.Element => {
 
   return (
     <div className="App">
-      <RoutesMap data={routeData} />
+      {routeData[0].distance ? (
+        <RoutesMap data={routeData} />
+      ) : (
+        <div>
+          <h1>FETCHING DATA</h1>
+        </div>
+      )}
     </div>
   );
 };

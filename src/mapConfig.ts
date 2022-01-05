@@ -1,3 +1,5 @@
+export const mapboxToken = process.env.REACT_APP_MAPBOX_TOKEN as string;
+
 export const clientID = process.env.REACT_APP_CLIENT_ID as string;
 export const clientSecret = process.env.REACT_APP_CLIENT_SECRET as string;
 export const refreshToken = process.env.REACT_APP_REFRESH_TOKEN as string;

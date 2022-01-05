@@ -4,23 +4,22 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import { IRoutesProps } from '../types';
+import getRandomColor from '../scripts/randomColor';
+import { mapboxToken } from '../mapConfig';
 
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN as string;
+mapboxgl.accessToken = mapboxToken;
 
 const RoutesMap = ({ data }: IRoutesProps): JSX.Element => {
   const mapContainerRef = React.useRef(null);
 
-  // React.useEffect(() => {
-  // if (mapContainerRef.current) return;
-  console.log('render');
-  console.log(data[0].distance);
-
-  if (data[0].distance) {
-    console.log(data[0].distance);
+  React.useEffect(() => {
+    // if (data[0].distance) {
+    // if (mapContainerRef.current) {
+    // console.log(data[0].distance);
     const map = new mapboxgl.Map({
-      container: mapContainerRef.current || 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [30.308611, 59.9375],
+      container: mapContainerRef.current as unknown as HTMLElement,
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [30.3086, 59.9375],
       zoom: 12.5,
     });
 
@@ -30,16 +29,13 @@ const RoutesMap = ({ data }: IRoutesProps): JSX.Element => {
     const mapFeatures: any = data.map((route) => ({
       type: 'Feature',
       properties: {
-        color: '#F7455D', // red
+        color: getRandomColor(5),
       },
       geometry: {
         type: 'LineString',
-        // coordinates: activityCoordinates,
         coordinates: route.coords,
       },
     }));
-
-    console.log(mapFeatures);
 
     map.on('load', () => {
       map.addSource('lines', {
@@ -47,18 +43,6 @@ const RoutesMap = ({ data }: IRoutesProps): JSX.Element => {
         data: {
           type: 'FeatureCollection',
           features: mapFeatures,
-          // features: [
-          //   {
-          //     type: 'Feature',
-          //     properties: {
-          //       color: '#F7455D', // red
-          //     },
-          //     geometry: {
-          //       type: 'LineString',
-          //       coordinates: [[30.308611, 59.9375]],
-          //     },
-          //   },
-          // ],
         },
       });
 
@@ -75,8 +59,8 @@ const RoutesMap = ({ data }: IRoutesProps): JSX.Element => {
 
     // clean up on unmount
     // return () => map.remove();
-  }
-  // }, [loaded]);
+    // }
+  }, []);
 
   return <div className="map" ref={mapContainerRef} />;
 };

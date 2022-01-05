@@ -19,8 +19,6 @@ const fetchStravaData: IFetchStravaData = async (
     `${activitiesLink}?access_token=${stravaAuthResponse[0].data.access_token}`,
   );
 
-  console.log(stravaActivityResponse);
-
   return stravaActivityResponse;
 };
 
