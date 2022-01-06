@@ -1,5 +1,10 @@
+/* eslint-disable import/no-webpack-loader-syntax */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React from 'react';
 import mapboxgl from 'mapbox-gl';
+
+// import mapboxgldist from 'mapbox-gl/dist/mapbox-gl';
+// import MapboxWorker from 'mapbox-gl/dist/mapbox-gl-csp-worker';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -8,6 +13,11 @@ import getRandomColor from '../scripts/randomColor';
 import { mapboxToken } from '../mapConfig';
 
 mapboxgl.accessToken = mapboxToken;
+
+// mapboxgl.workerClass = MapboxWorker;
+
+(mapboxgl as any).workerClass =
+  require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 const RoutesMap = ({ data }: IRoutesProps): JSX.Element => {
   const mapContainerRef = React.useRef(null);
