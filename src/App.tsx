@@ -3,7 +3,8 @@ import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
 
-import RoutesMap from './components';
+import RoutesMap from './components/RoutesMap';
+import Spinner from './components/Spinner';
 import { fetchRoutes } from './store/trackerSlice';
 
 // import { IRouteRenderData, IRouteResponseData } from './types';
@@ -26,14 +27,8 @@ const App = (): JSX.Element => {
   console.log(status);
 
   return (
-    <div className="App">
-      {status === 'fulfilled' ? (
-        <RoutesMap />
-      ) : (
-        <div>
-          <h1>FETCHING DATA</h1>
-        </div>
-      )}
+    <div className="walk-tracker">
+      {status === 'fulfilled' ? <RoutesMap /> : <Spinner />}
     </div>
   );
 };
