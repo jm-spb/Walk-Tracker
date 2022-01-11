@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { IFetchStravaData } from '../types';
+import { IFetchStravaData, IRouteResponseData } from '../types';
 
 const fetchStravaData: IFetchStravaData = async (
   clientID,
@@ -19,7 +19,25 @@ const fetchStravaData: IFetchStravaData = async (
     `${activitiesLink}?access_token=${stravaAuthResponse[0].data.access_token}`,
   );
 
-  return stravaActivityResponse;
+  const formatedResponse: IRouteResponseData[] = stravaActivityResponse.data.map(
+    ({
+      name,
+      distance,
+      average_speed,
+      max_speed,
+      moving_time,
+      map,
+    }: IRouteResponseData) => ({
+      name,
+      distance,
+      average_speed,
+      max_speed,
+      moving_time,
+      map,
+    }),
+  );
+
+  return formatedResponse;
 };
 
 export default fetchStravaData;

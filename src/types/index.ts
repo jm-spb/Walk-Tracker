@@ -1,13 +1,3 @@
-export interface IFetchStravaData {
-  (
-    clientID: string,
-    clientSecret: string,
-    refreshToken: string,
-    authLink: string,
-    activitiesLink: string,
-  ): any;
-}
-
 export interface IRouteRenderData {
   name: string;
   distance: number;
@@ -32,6 +22,12 @@ export interface IRouteResponseData {
   map: IMapPolyline;
 }
 
-export interface IRoutesProps {
-  data: IRouteRenderData[];
+export interface IFetchStravaData {
+  (
+    clientID: string,
+    clientSecret: string,
+    refreshToken: string,
+    authLink: string,
+    activitiesLink: string,
+  ): Promise<IRouteResponseData[]>;
 }
