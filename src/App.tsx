@@ -1,29 +1,20 @@
 import React from 'react';
-import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
 
 import RoutesMap from './components/RoutesMap';
 import Spinner from './components/Spinner';
+import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { fetchRoutes } from './store/trackerSlice';
 
-// import { IRouteRenderData, IRouteResponseData } from './types';
-// import {
-//   clientID,
-//   clientSecret,
-//   refreshToken,
-//   authLink,
-//   activitiesLink,
-// } from './mapConfig';
-
 const App = (): JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   React.useEffect(() => {
     dispatch(fetchRoutes());
   }, [dispatch]);
 
-  const { status } = useSelector((state: RootStateOrAny) => state);
+  const { status } = useAppSelector((state) => state);
   console.log(status);
 
   return (

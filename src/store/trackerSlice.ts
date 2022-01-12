@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import polyline from '@mapbox/polyline';
 
-import { IRouteResponseData } from '../types';
+import { IRouteRenderData, ITrackerState } from '../types';
 
 import fetchStravaData from '../api/fetchStravaData';
 
@@ -22,7 +22,7 @@ export const fetchRoutes = createAsyncThunk('tracker/fetchRoutes', async () => {
     activitiesLink,
   );
 
-  const formatedData = responseData.data?.map(
+  const formatedData: IRouteRenderData[] = responseData.map(
     ({
       name,
       distance,
@@ -30,13 +30,13 @@ export const fetchRoutes = createAsyncThunk('tracker/fetchRoutes', async () => {
       max_speed,
       moving_time,
       map: { summary_polyline },
-    }: IRouteResponseData) => ({
+    }) => ({
       name,
       distance,
       average_speed,
       max_speed,
       moving_time,
-      coords: polyline.decode(summary_polyline).map((coord) => coord.reverse()),
+      coords: polyline.decode(summary_polyline),
     }),
   );
 
@@ -58,16 +58,26 @@ const trackerSlice = createSlice({
     ],
     status: '',
     error: '',
-  },
+  } as ITrackerState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchRoutes.pending, (state) => {
       state.status = 'loading';
       state.error = '';
     });
-    builder.addCase(fetchRoutes.fulfilled, (state, action) => {
+    builder.addCase(fetchRoutes.fulfilled, (state, { payload }) => {
       state.status = 'fulfilled';
-      state.routes = action.payload;
+      state.routes = payload.map(
+        ({ name, distance, average_speed, max_speed, moving_time, coords }) =>
+          ({
+            name,
+            distance: parseFloat((distance / 1000).toFixed(2)), // km
+            average_speed: parseFloat(average_speed.toFixed(2)), // m/s
+            max_speed: parseFloat(max_speed.toFixed(2)), // m/s
+            moving_time, // seconds
+            coords: coords.map((coord) => coord.reverse()),
+          } as IRouteRenderData),
+      );
     });
     builder.addCase(fetchRoutes.rejected, (state) => {
       state.error = 'error';
