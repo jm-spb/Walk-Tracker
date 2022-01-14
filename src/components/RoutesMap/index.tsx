@@ -1,39 +1,44 @@
-/* eslint-disable import/no-webpack-loader-syntax */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React from 'react';
 import mapboxgl from 'mapbox-gl';
-import { RootStateOrAny, useSelector } from 'react-redux';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-// import { IRoutesProps } from '../types';
-import getRandomColor from '../scripts/randomColor';
-import { mapboxToken } from '../mapConfig';
+import getRandomColor from '../../utils/randomColor';
+import renderMarkers from '../../utils/renderMarkers';
+
+import { mapboxToken } from '../../mapConfig';
+import { useAppSelector } from '../../hooks/redux';
+import { GetRoutesColorsType } from '../../types';
 
 mapboxgl.accessToken = mapboxToken;
 
 (mapboxgl as any).workerClass =
   require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
+const getRoutesColors: GetRoutesColorsType = ({ routesCount, brightness }) =>
+  new Array(routesCount).fill(null).map((_) => getRandomColor(brightness));
+
 const RoutesMap = (): JSX.Element => {
   const mapContainerRef = React.useRef(null);
-  const { routes } = useSelector((state: RootStateOrAny) => state);
+  const { routes } = useAppSelector((state) => state);
+
+  const routesColors = getRoutesColors({ routesCount: routes.length, brightness: 5 });
 
   React.useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current as unknown as HTMLElement,
       style: 'mapbox://styles/mapbox/light-v10',
       center: [30.3086, 59.9375],
-      zoom: 12.5,
+      zoom: 12,
     });
 
     // add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
-    const mapFeatures: any = routes.map((route: any) => ({
+    const mapFeatures: any = routes.map((route, idx) => ({
       type: 'Feature',
       properties: {
-        color: getRandomColor(5),
+        color: routesColors[idx],
       },
       geometry: {
         type: 'LineString',
@@ -60,9 +65,11 @@ const RoutesMap = (): JSX.Element => {
         },
       });
     });
+
+    renderMarkers({ routes, renderMap: map, routesColors });
   }, []);
 
-  return <div className="map" ref={mapContainerRef} />;
+  return <div className="walk-tracker__map" ref={mapContainerRef} />;
 };
 
 export default RoutesMap;
