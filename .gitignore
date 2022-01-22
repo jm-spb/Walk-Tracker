@@ -21,6 +21,11 @@
 .env.test.local
 .env.production.local
 
+#firebase
+/.firebase
+.firebaserc
+firebase.json
+
 .eslintrc.json
 
 npm-debug.log*
