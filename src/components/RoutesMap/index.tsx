@@ -3,6 +3,7 @@ import mapboxgl from 'mapbox-gl';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+import DropdownComponent from '../Dropdown';
 import getRandomColor from '../../utils/randomColor';
 import renderMarkers from '../../utils/renderMarkers';
 
@@ -19,15 +20,15 @@ const getRoutesColors: GetRoutesColorsType = ({ routesCount, brightness }) =>
   new Array(routesCount).fill(null).map((_) => getRandomColor(brightness));
 
 const RoutesMap = (): JSX.Element => {
+  const [theme, setTheme] = React.useState('mapbox://styles/mapbox/light-v10');
   const mapContainerRef = React.useRef(null);
   const { routes } = useAppSelector((state) => state);
-
   const routesColors = getRoutesColors({ routesCount: routes.length, brightness: 5 });
 
   React.useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current as unknown as HTMLElement,
-      style: 'mapbox://styles/mapbox/light-v10',
+      style: theme,
       center: [30.3086, 59.9375],
       zoom: 12,
     });
@@ -67,9 +68,13 @@ const RoutesMap = (): JSX.Element => {
     });
 
     renderMarkers({ routes, renderMap: map, routesColors });
-  }, []);
+  }, [theme]);
 
-  return <div className="walk-tracker__map" ref={mapContainerRef} />;
+  return (
+    <div className="walk-tracker__map" ref={mapContainerRef}>
+      <DropdownComponent onMapThemeChange={setTheme} />
+    </div>
+  );
 };
 
 export default RoutesMap;

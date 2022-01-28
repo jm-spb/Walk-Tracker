@@ -53,3 +53,7 @@ export type GetRoutesColorsType = (obj: {
   routesCount: number;
   brightness: number;
 }) => Array<string>;
+
+export interface IOnMapThemeChange {
+  onMapThemeChange: (arg: string) => void;
+}
