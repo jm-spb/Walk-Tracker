@@ -13,35 +13,45 @@ import {
   activitiesLink,
 } from '../mapConfig';
 
-export const fetchRoutes = createAsyncThunk('tracker/fetchRoutes', async () => {
-  const responseData = await fetchStravaData(
-    clientID,
-    clientSecret,
-    refreshToken,
-    authLink,
-    activitiesLink,
-  );
+export const fetchRoutes = createAsyncThunk(
+  'tracker/fetchRoutes',
+  async (_, { rejectWithValue }) => {
+    try {
+      const responseData = await fetchStravaData(
+        clientID,
+        clientSecret,
+        refreshToken,
+        authLink,
+        activitiesLink,
+      );
 
-  const formatedData: IRouteRenderData[] = responseData.map(
-    ({
-      name,
-      distance,
-      average_speed,
-      max_speed,
-      moving_time,
-      map: { summary_polyline },
-    }) => ({
-      name,
-      distance,
-      average_speed,
-      max_speed,
-      moving_time,
-      coords: polyline.decode(summary_polyline),
-    }),
-  );
+      const formatedData: IRouteRenderData[] = responseData.map(
+        ({
+          name,
+          distance,
+          average_speed,
+          max_speed,
+          moving_time,
+          map: { summary_polyline },
+        }) => ({
+          name,
+          distance,
+          average_speed,
+          max_speed,
+          moving_time,
+          coords: polyline.decode(summary_polyline),
+        }),
+      );
 
-  return formatedData;
-});
+      return formatedData;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.name);
+      }
+      return rejectWithValue(error);
+    }
+  },
+);
 
 const trackerSlice = createSlice({
   name: 'tracker',
@@ -79,8 +89,9 @@ const trackerSlice = createSlice({
           } as IRouteRenderData),
       );
     });
-    builder.addCase(fetchRoutes.rejected, (state) => {
-      state.error = 'error';
+    builder.addCase(fetchRoutes.rejected, (state, { payload }) => {
+      state.status = 'rejected';
+      state.error = payload as string;
     });
   },
 });
