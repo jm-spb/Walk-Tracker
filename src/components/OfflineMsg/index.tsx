@@ -2,7 +2,7 @@ import React from 'react';
 
 import no_internet from '../../assets/no_internet.webp';
 
-const ErrorMsg = () => (
+const OfflineMsg = () => (
   <div className="walk-tracker">
     <div className="walk-tracker__offline">
       <img src={no_internet} alt="no internet connection" />
@@ -10,4 +10,4 @@ const ErrorMsg = () => (
   </div>
 );
 
-export default ErrorMsg;
+export default OfflineMsg;
