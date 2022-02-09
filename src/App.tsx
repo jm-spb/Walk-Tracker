@@ -5,6 +5,7 @@ import './App.scss';
 import RoutesMap from './components/RoutesMap';
 import Spinner from './components/Spinner';
 import OfflineMsg from './components/OfflineMsg';
+import ErrorMsg from './components/ErrorMsg';
 
 import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { fetchRoutes } from './store/trackerSlice';
@@ -23,7 +24,7 @@ const App = (): JSX.Element => {
   console.log(`status: ${status}`);
   console.log(`error: ${error}`);
 
-  // if (error) return
+  if (error) return <ErrorMsg />;
 
   return (
     <div className="walk-tracker">
