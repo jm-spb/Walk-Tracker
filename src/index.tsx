@@ -10,11 +10,10 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <App />
+  </Provider>,
+
   document.getElementById('root'),
 );
 

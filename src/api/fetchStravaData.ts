@@ -9,14 +9,12 @@ const fetchStravaData: IFetchStravaData = async (
   authLink,
   activitiesLink,
 ) => {
-  const stravaAuthResponse = await axios.all([
-    axios.post(
-      `${authLink}?client_id=${clientID}&client_secret=${clientSecret}&refresh_token=${refreshToken}&grant_type=refresh_token`,
-    ),
-  ]);
+  const stravaAuthResponse = await axios.post(
+    `${authLink}?client_id=${clientID}&client_secret=${clientSecret}&refresh_token=${refreshToken}&grant_type=refresh_token`,
+  );
 
   const stravaActivityResponse = await axios.get(
-    `${activitiesLink}?access_token=${stravaAuthResponse[0].data.access_token}`,
+    `${activitiesLink}?access_token=${stravaAuthResponse.data.access_token}`,
   );
 
   const formatedResponse: IRouteResponseData[] = stravaActivityResponse.data.map(

@@ -46,8 +46,11 @@ export const fetchRoutes = createAsyncThunk(
       return formatedData;
     } catch (error) {
       if (error instanceof Error) {
+        // pass error name as payload in reducer on rejected
         return rejectWithValue(error.name);
       }
+      // never gets here because error will always be instanceof of Error
+      // need explicit return to avoid eslint and ts warnings
       return rejectWithValue(error);
     }
   },
@@ -85,9 +88,11 @@ const trackerSlice = createSlice({
             average_speed: parseFloat(average_speed.toFixed(2)), // m/s
             max_speed: parseFloat(max_speed.toFixed(2)), // m/s
             moving_time, // seconds
+            // polyline.decode() returns each coordinate in [ Lat, Long ] format. Mapbox, however, needs the data in reverse, so [ Long, Lat ].
             coords: coords.map((coord) => coord.reverse()),
           } as IRouteRenderData),
       );
+      state.error = '';
     });
     builder.addCase(fetchRoutes.rejected, (state, { payload }) => {
       state.status = 'rejected';

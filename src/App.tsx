@@ -21,8 +21,6 @@ const App = (): JSX.Element => {
   }, [dispatch]);
 
   const { status, error } = useAppSelector((state) => state);
-  console.log(`status: ${status}`);
-  console.log(`error: ${error}`);
 
   if (error) return <ErrorMsg />;
 

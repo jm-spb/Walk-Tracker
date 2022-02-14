@@ -4,20 +4,17 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import DropdownComponent from '../Dropdown';
-import getRandomColor from '../../utils/randomColor';
+import getRoutesColors from '../../utils/getRoutesColors';
 import renderMarkers from '../../utils/renderMarkers';
 
 import { mapboxToken } from '../../mapConfig';
 import { useAppSelector } from '../../hooks/redux';
-import { GetRoutesColorsType } from '../../types';
 
 mapboxgl.accessToken = mapboxToken;
 
+// in order to render mapbox when deploy on the web
 (mapboxgl as any).workerClass =
   require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
-
-const getRoutesColors: GetRoutesColorsType = ({ routesCount, brightness }) =>
-  new Array(routesCount).fill(null).map((_) => getRandomColor(brightness));
 
 const RoutesMap = (): JSX.Element => {
   const [theme, setTheme] = React.useState('mapbox://styles/mapbox/light-v10');
@@ -36,6 +33,7 @@ const RoutesMap = (): JSX.Element => {
     // add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
+    // unable to resolve type issues with features array
     const mapFeatures: any = routes.map((route, idx) => ({
       type: 'Feature',
       properties: {
